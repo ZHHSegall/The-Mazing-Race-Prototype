@@ -85,9 +85,20 @@ public class Maze {
 				System.out.print("" + rowNum + " ");
 				for(int col = 0; col < width + 1; col++){
 					if(vWalls[rowNum][col]){
-						System.out.print("|   ");
+						System.out.print("|");
 					} else {
-						System.out.print("    ");
+						System.out.print(" ");
+					}
+					
+					//prints players
+					if(p1.at(rowNum, col) && p2.at(rowNum, col)){
+						System.out.print("X O");
+					} else if(p1.at(rowNum, col)){
+						System.out.print(" X ");
+					} else if(p2.at(rowNum, col)){
+						System.out.print(" O ");
+					} else {
+						System.out.print("   ");
 					}
 				}
 				System.out.println(rowNum);
