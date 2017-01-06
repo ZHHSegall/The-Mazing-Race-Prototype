@@ -15,6 +15,7 @@ public class Main {
 		while(gameboard.gameOver() == 0){
 			gameboard.print();
 			System.out.println();
+			//TODO: Move before placing wall?
 			while(!gameboard.move(getMove(in))){
 				System.out.println("You seem to be running into a wall. Please try another move.");
 			}
@@ -47,27 +48,37 @@ public class Main {
 	}
 	
 	public static void placeWall(Scanner in, Maze board) throws Exception{
-		Coordinates s1 = new Coordinates (-1, -1);
-		Coordinates s2 = new Coordinates (-1, -1);
-		
-		while(!s1.adjacent(s2) || board.wallBetween(s1, s2)){
+		Coordinates s1 = new Coordinates (0, 0);
+		Coordinates s2 = new Coordinates (0, 0);
+		boolean acceptable = false;
+		boolean needS1 = true;
+		boolean needS2 = true;
+		while(!acceptable){
+			
 			System.out.println("Please enter the coordinates of two squares you want to place a wall between");
 			//TODO fix input reading
-			while(!s1.within(board)){
+			while(needS1){
 				System.out.print("Square 1 Coordinates: ");
 				s1 = new Coordinates(in.nextInt(), in.nextInt());
 				if(!s1.within(board)){ System.out.println("Those coordinates don't fall within the board. Try again."); }
+				needS1 = !s1.within(board);
 			}
-			while(!s2.within(board)){
+			while(needS2){
 				System.out.print("Square 2 Coordinates: ");
 				s2 = new Coordinates(in.nextInt(), in.nextInt());
 				if(!s2.within(board)){ System.out.println("Those coordinates don't fall within the board. Try again."); }
+				needS2 = !s2.within(board);
 			}
 			if(!s1.adjacent(s2)){
 				System.out.println("Those coordinates don't seem to be adjacent. Try again.");
 			}
 			if(board.wallBetween(s1, s2)){
 				System.out.println("There is already a wall between those coordinates. Try again.");
+			}
+			acceptable = s1.adjacent(s2) && !board.wallBetween(s1, s2);
+			if(!acceptable){
+				needS1 = true;
+				needS2 = true;
 			}
 		}
 		board.placeWall(s1, s2);
