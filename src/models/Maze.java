@@ -24,6 +24,7 @@ public class Maze {
 	//Board properties
 	int width;
 	int height;
+	int turn;
 	
 	//Board
 	//Don't forget: 2D arrays are [row][col]
@@ -33,16 +34,18 @@ public class Maze {
 	//Players
 	Player p1;
 	Player p2;
+	boolean p1Turn = true;
 	
 	public Maze (int h, int w){
 		height = h;
 		width = w;
+		turn = 0;
 		
 		hWalls = new boolean[h + 1][w];
 		vWalls = new boolean[h][w + 1];
 		
 		p1 = new Player(0, 0);
-		p2 = new Player(0, w - 1);
+		p2 = new Player(w - 1, 0);
 		
 		//Initialize the outer walls
 		for(int i = 0; i < width; i++){
@@ -55,8 +58,36 @@ public class Maze {
 		}
 	}
 	
+	//Returns true if valid; false otherwise
+	public boolean move(char direction){
+		Player cur;
+		if(p1Turn){ cur = p1; }
+		else {cur = p2; }
+		
+		switch(direction){
+		case 'u':
+			cur.up();
+			break;
+		case 'r':
+			cur.left();
+			break;
+		case 'd':
+			cur.down();
+			break;
+		case 'l':
+			cur.right();
+			break;
+		}
+		
+		p1Turn = !p1Turn;
+		return true;
+	}
+	
 	public void print (){
 		//Print top coordinates
+		int playerTurn = p1Turn ? 1 : 2;
+		System.out.println("Turn: " + turn++ + "-- PLAYER " + playerTurn + "'S MOVE");
+		System.out.println();;
 		System.out.print("  ");
 		for(int i = 0; i < width; i++){
 			System.out.print("  " + i +" ");
@@ -91,11 +122,13 @@ public class Maze {
 					}
 					
 					//prints players
-					if(p1.at(rowNum, col) && p2.at(rowNum, col)){
+					boolean p1InSquare = p1.at(col, rowNum);
+					boolean p2InSquare = p2.at(col, rowNum);
+					if(p1InSquare && p2InSquare){
 						System.out.print("X O");
-					} else if(p1.at(rowNum, col)){
+					} else if(p1InSquare){
 						System.out.print(" X ");
-					} else if(p2.at(rowNum, col)){
+					} else if(p2InSquare){
 						System.out.print(" O ");
 					} else {
 						System.out.print("   ");
