@@ -66,16 +66,20 @@ public class Maze {
 		
 		switch(direction){
 		case 'u':
+			if(hWalls[cur.y + 1][cur.x]){ return false; }
 			cur.up();
 			break;
 		case 'r':
-			cur.left();
+			if(vWalls[cur.y][cur.x + 1]){ return false; }
+			cur.right();
 			break;
 		case 'd':
+			if(hWalls[cur.y][cur.x]){ return false; }
 			cur.down();
 			break;
 		case 'l':
-			cur.right();
+			if(vWalls[cur.y][cur.x]){ return false; }
+			cur.left();
 			break;
 		}
 		
@@ -112,7 +116,7 @@ public class Maze {
 				System.out.println("+");
 			} else {
 			// If we are printing tiles...
-				int rowNum = (row -1)/2; 
+				int rowNum = (row - 1)/2; 
 				System.out.print("" + rowNum + " ");
 				for(int col = 0; col < width + 1; col++){
 					if(vWalls[rowNum][col]){
@@ -120,18 +124,19 @@ public class Maze {
 					} else {
 						System.out.print(" ");
 					}
-					
-					//prints players
-					boolean p1InSquare = p1.at(col, rowNum);
-					boolean p2InSquare = p2.at(col, rowNum);
-					if(p1InSquare && p2InSquare){
-						System.out.print("X O");
-					} else if(p1InSquare){
-						System.out.print(" X ");
-					} else if(p2InSquare){
-						System.out.print(" O ");
-					} else {
-						System.out.print("   ");
+					if(col != width){
+						//prints players
+						boolean p1InSquare = p1.at(col, rowNum);
+						boolean p2InSquare = p2.at(col, rowNum);
+						if(p1InSquare && p2InSquare){
+							System.out.print("X O");
+						} else if(p1InSquare){
+							System.out.print(" X ");
+						} else if(p2InSquare){
+							System.out.print(" O ");
+						} else {
+							System.out.print("   ");
+						}
 					}
 				}
 				System.out.println(rowNum);

@@ -15,7 +15,9 @@ public class Main {
 		while(gameboard.gameOver() == 0){
 			gameboard.print();
 			System.out.println();
-			gameboard.move(getMove(in));
+			while(!gameboard.move(getMove(in))){
+				System.out.println("You seem to be running into a wall. Please try another move.");
+			}
 			System.out.println();
 		}
 		if(gameboard.gameOver() == 1){
@@ -33,7 +35,8 @@ public class Main {
 		while(!valid){
 			System.out.println("Please enter a direction to move: (l)eft, (r)ight, (u)p, (d)own");
 			//TODO Improve character verification
-			direction = in.nextLine().toLowerCase().charAt(0);
+			String next = in.nextLine();
+			if(next.length() > 0) { direction = next.toLowerCase().charAt(0); }
 			valid = (direction == 'u' || direction == 'd' || direction == 'l' || direction == 'r');
 			if(!valid){
 				System.out.println("Not a valid direction. Please try again");
