@@ -9,6 +9,11 @@ public class Coordinates {
 		this.y = y;
 	}
 	
+	public void set(int x, int y){
+		this.x = x;
+		this.y = y;
+	}
+	
 	public boolean equals(Coordinates other){
 		return x == other.x && y == other.y;
 	}
@@ -24,10 +29,7 @@ public class Coordinates {
 	}
 	
 	
-	void up (){ y++; }
-	void down () { y--; }
-	void left () { x--; }
-	void right () { x++; }
+
 	
 	
 }

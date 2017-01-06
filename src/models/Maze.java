@@ -7,13 +7,12 @@ public class Maze {
 		
 		Player (int x, int y){
 			location = new Coordinates(x, y);
-		}
-		
-		//Movement - named for clarity in coe
-		void up (){ location.up(); }
-		void down () { location.down();  }
-		void left () { location.left();  }
-		void right () { location.right();  }
+		}	
+		//Movement - named for clarity in code
+		void up (){ location.y++; }
+		void down () { location.y--;  }
+		void left () { location.x--;  }
+		void right () { location.x++;  }
 		
 		boolean at(Coordinates square){ return location.equals(square); } 
 		
@@ -87,25 +86,22 @@ public class Maze {
 		return true;
 	}
 	
-	
+	/*
+	 * Tests if
+	 * a) Squares are adjacent AND
+	 * b) If squares are adjacent and have the same x-coordinate,
+	 * 		is there a horizontal wall between them? OR
+	 * c) If squares are adjacent and have the same y-coordinate,
+	 * 		is there a vertical wall between them? 
+	 */
 	public boolean wallBetween(Coordinates s1, Coordinates s2){
-		if(s1.adjacent(s2)){
-			//Horizontal case
-			if(s1.x == s2.x){
-				int maxY = Math.max(s1.y, s2.y);
-				if(hWalls[maxY][s1.x]){ return true; }
-			} 
-			//Vertical case
-			else if(s1.y == s2.y){
-				int maxX = Math.max(s1.x, s2.x);
-				if(vWalls[s1.y][maxX]){ return true; }
-			}
-		}
-		return false;
+		return s1.adjacent(s2) 
+			&& ((s1.x == s2.x && hWalls[Math.max(s1.y, s2.y)][s1.x]) 
+				|| (s1.y == s2.y && vWalls[s1.y][Math.max(s1.x, s2.x)]));
 	}
 	
-	public void placeWall (Coordinates s1, Coordinates s2) throws Exception{
-		if(!s1.adjacent(s2) || wallBetween(s1, s2)){ throw new Exception("Illegal Move"); }
+	public boolean placeWall (Coordinates s1, Coordinates s2){
+		if(!s1.adjacent(s2) || wallBetween(s1, s2)){ return false; }
 		//Horizontal case
 		if(s1.x == s2.x){
 			int maxY = Math.max(s1.y, s2.y);
@@ -116,6 +112,7 @@ public class Maze {
 			int maxX = Math.max(s1.x, s2.x);
 			vWalls[s1.y][maxX] = true;
 		}
+		return true;
 	}
 	
 	public void print (){
