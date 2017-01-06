@@ -3,22 +3,22 @@ package models;
 public class Maze {
 	
 	private class Player {
-		int x; 
-		int y;
+		Coordinates location;
 		
 		Player (int x, int y){
-			this.x = x;
-			this.y = y;
+			location = new Coordinates(x, y);
 		}
 		
 		//Movement - named for clarity in coe
-		void up (){ y++; }
-		void down () { y--; }
-		void left () { x--; }
-		void right () { x++; }
+		void up (){ location.up(); }
+		void down () { location.down();  }
+		void left () { location.left();  }
+		void right () { location.right();  }
 		
-		boolean at(int x, int y){ return this.x == x && this.y == y; } 
+		boolean at(Coordinates square){ return location.equals(square); } 
 		
+		public int x() { return location.x; }
+		public int y() { return location.y; }
 	}
 	
 	//Board properties
@@ -66,25 +66,56 @@ public class Maze {
 		
 		switch(direction){
 		case 'u':
-			if(hWalls[cur.y + 1][cur.x]){ return false; }
+			if(hWalls[cur.y() + 1][cur.x()]){ return false; }
 			cur.up();
 			break;
 		case 'r':
-			if(vWalls[cur.y][cur.x + 1]){ return false; }
+			if(vWalls[cur.y()][cur.x() + 1]){ return false; }
 			cur.right();
 			break;
 		case 'd':
-			if(hWalls[cur.y][cur.x]){ return false; }
+			if(hWalls[cur.y()][cur.x()]){ return false; }
 			cur.down();
 			break;
 		case 'l':
-			if(vWalls[cur.y][cur.x]){ return false; }
+			if(vWalls[cur.y()][cur.x()]){ return false; }
 			cur.left();
 			break;
 		}
 		
 		p1Turn = !p1Turn;
 		return true;
+	}
+	
+	
+	public boolean wallBetween(Coordinates s1, Coordinates s2){
+		if(s1.adjacent(s2)){
+			//Horizontal case
+			if(s1.x == s2.x){
+				int maxY = Math.max(s1.y, s2.y);
+				if(hWalls[maxY][s1.x]){ return true; }
+			} 
+			//Vertical case
+			else if(s1.y == s2.y){
+				int maxX = Math.max(s1.x, s2.x);
+				if(vWalls[s1.y][maxX]){ return true; }
+			}
+		}
+		return false;
+	}
+	
+	public void placeWall (Coordinates s1, Coordinates s2) throws Exception{
+		if(!s1.adjacent(s2) || wallBetween(s1, s2)){ throw new Exception("Illegal Move"); }
+		//Horizontal case
+		if(s1.x == s2.x){
+			int maxY = Math.max(s1.y, s2.y);
+			hWalls[maxY][s1.x] = true; 
+		} 
+		//Vertical case
+		else if(s1.y == s2.y){
+			int maxX = Math.max(s1.x, s2.x);
+			vWalls[s1.y][maxX] = true;
+		}
 	}
 	
 	public void print (){
@@ -126,8 +157,8 @@ public class Maze {
 					}
 					if(col != width){
 						//prints players
-						boolean p1InSquare = p1.at(col, rowNum);
-						boolean p2InSquare = p2.at(col, rowNum);
+						boolean p1InSquare = p1.at(new Coordinates(col, rowNum));
+						boolean p2InSquare = p2.at(new Coordinates(col, rowNum));
 						if(p1InSquare && p2InSquare){
 							System.out.print("X O");
 						} else if(p1InSquare){
@@ -153,8 +184,8 @@ public class Maze {
 	
 	//Returns 1 if player 1 has won, -1 is player 2 has, and 0 otherwise
 	public int gameOver (){
-		if(p1.at(width - 1, height - 1)){ return 1; }
-		else if(p2.at(0, height - 1)){ return -1; }
+		if(p1.at(new Coordinates(width - 1, height - 1))){ return 1; }
+		else if(p2.at(new Coordinates(0, height - 1))){ return -1; }
 		else { return 0; }
 	}
 }
