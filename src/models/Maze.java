@@ -34,6 +34,8 @@ public class Maze {
 	Player p1;
 	Player p2;
 	boolean p1Turn = true;
+	Coordinates p1Goal;
+	Coordinates p2Goal;
 	
 	public Maze (int h, int w){
 		height = h;
@@ -45,6 +47,8 @@ public class Maze {
 		
 		p1 = new Player(0, 0);
 		p2 = new Player(w - 1, 0);
+		p1Goal = new Coordinates(w - 1, h - 1);
+		p2Goal = new Coordinates(0, h - 1);
 		
 		//Initialize the outer walls
 		for(int i = 0; i < width; i++){
@@ -55,6 +59,30 @@ public class Maze {
 			vWalls[i][0] = true;
 			vWalls[i][w] = true;
 		}
+	}
+	
+	
+	//Tests if a move is valid without moving a player
+	public boolean moveIsValid(char dir, Coordinates loc){
+		if(!loc.within(this))
+			return false;
+		
+		switch(dir){
+		case 'u':
+			if(hWalls[loc.y + 1][loc.x]){ return false; }
+			break;
+		case 'r':
+			if(vWalls[loc.y][loc.x + 1]){ return false; }
+			break;
+		case 'd':
+			if(hWalls[loc.y][loc.x]){ return false; }
+			break;
+		case 'l':
+			if(vWalls[loc.y][loc.x]){ return false; }
+			break;
+		}
+		
+		return true;
 	}
 	
 	//Returns true if valid; false otherwise
@@ -100,19 +128,43 @@ public class Maze {
 				|| (s1.y == s2.y && vWalls[s1.y][Math.max(s1.x, s2.x)]));
 	}
 	
-	public boolean placeWall (Coordinates s1, Coordinates s2){
-		if(!s1.adjacent(s2) || wallBetween(s1, s2)){ return false; }
+	//returns 0 for valid path
+	//		  1 for squares not adjacent
+	//		  2 for wall already present
+	//        3 for wall blocks player one's path
+	//        4 for wall blocks player two's path
+	public int placeWall (Coordinates s1, Coordinates s2){
+		PathFinder p1Path = new PathFinder(this, p1.location, p1Goal);
+		PathFinder p2Path = new PathFinder(this, p2.location, p2Goal);
+		if(!s1.adjacent(s2))
+			return 1;
+		if(wallBetween(s1, s2))
+			return 2;
 		//Horizontal case
 		if(s1.x == s2.x){
 			int maxY = Math.max(s1.y, s2.y);
-			hWalls[maxY][s1.x] = true; 
+			hWalls[maxY][s1.x] = true;
+			if(!p1Path.findPath()){
+				hWalls[maxY][s1.x] = false;
+				return 3;
+			} else if (!p1Path.findPath()){
+				hWalls[maxY][s1.x] = false;
+				return 4;
+			}
 		} 
 		//Vertical case
 		else if(s1.y == s2.y){
 			int maxX = Math.max(s1.x, s2.x);
 			vWalls[s1.y][maxX] = true;
+			if(!p1Path.findPath()){
+				hWalls[s1.y][maxX] = false;
+				return 3;
+			} else if(!p2Path.findPath()){
+				hWalls[s1.y][maxX] = false;
+				return 4;
+			}
 		}
-		return true;
+		return 0;
 	}
 	
 	public void print (){
@@ -181,8 +233,9 @@ public class Maze {
 	
 	//Returns 1 if player 1 has won, -1 is player 2 has, and 0 otherwise
 	public int gameOver (){
-		if(p1.at(new Coordinates(width - 1, height - 1))){ return 1; }
-		else if(p2.at(new Coordinates(0, height - 1))){ return -1; }
+		if(p1.at(p1Goal)){ return 1; }
+		else if(p2.at(p2Goal)){ return -1; }
 		else { return 0; }
 	}
+	
 }

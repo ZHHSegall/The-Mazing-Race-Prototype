@@ -28,8 +28,16 @@ public class Coordinates {
 			   (0 <= y && y < m.height);
 	}
 	
+	//Euclidean distance between two points
+	public double eucDistanceTo(Coordinates other){
+		return Math.sqrt(Math.pow((x - other.x), 2) + Math.pow((y - other.y), 2));
+	}
+		
+	//Manhattan distance between two points
+	public int manDistanceTo(Coordinates other){
+		return Math.abs(x - other.x) + Math.abs(y - other.y);
+	}
 	
-
 	
 	
 }

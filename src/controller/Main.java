@@ -24,19 +24,28 @@ public class Main {
 			}
 			
 			//Wall placing
-			boolean validWall = false;
+			int validWall = -1;
 			Coordinates s1, s2; //Squares between which the wall will be placed
-			while(!validWall){
+			while(validWall != 0){
 				System.out.println("Enter two squares to place a wall between.");
 				s1 = getCoordinates(in, gameboard, "Square 1");
 				s2 = getCoordinates(in, gameboard, "Square 2");
 				validWall = gameboard.placeWall(s1, s2);
-				if(!s1.adjacent(s2)){
+				switch(validWall){
+				case 1: 
 					System.out.println("Those coordinates don't seem to be adjacent. Try again.");
-				}
-				if(gameboard.wallBetween(s1, s2)){
+					break;
+				case 2:
 					System.out.println("There is already a wall between those coordinates. Try again.");
+					break;
+				case 3: 
+					System.out.println("That wall prevents Player One from reaching their goal. Try again.");
+					break;
+				case 4: 
+					System.out.println("That wall prevents Player Two from reaching their goal. Try again.");
+					break;
 				}
+				
 			}
 			System.out.println();
 		}
