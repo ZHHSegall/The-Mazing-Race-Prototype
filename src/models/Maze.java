@@ -110,7 +110,6 @@ public class Maze {
 			break;
 		}
 		
-		p1Turn = !p1Turn;
 		return true;
 	}
 	
@@ -160,10 +159,15 @@ public class Maze {
 		return 0;
 	}
 	
-	public void print (){
+	public void print (boolean move){
 		//Print top coordinates
 		int playerTurn = p1Turn ? 1 : 2;
-		System.out.println("Turn: " + turn++ + " -- PLAYER " + playerTurn + "'S MOVE");
+		if(move){
+			System.out.println("Turn: " + turn + " -- PLAYER " + playerTurn + " -- MOVE");
+		} else {
+			System.out.println("Turn: " + turn + " -- PLAYER " + playerTurn + " -- WALL");
+			p1Turn = !p1Turn;
+		}
 		System.out.println();;
 		System.out.print("  ");
 		for(int i = 0; i < width; i++){
