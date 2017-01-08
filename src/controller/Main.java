@@ -14,14 +14,15 @@ public class Main {
 		
 		while(gameboard.gameOver() == 0){
 			//Printing Board
-			gameboard.print();
-			System.out.println();
+			gameboard.print(true); //place wall
+			System.out.println(); 
 			
 			//Movement
-			//TODO: Display move before placing wall?
 			while(!gameboard.move(getMove(in))){
 				System.out.println("You seem to be running into a wall. Please try another move.");
 			}
+			
+			gameboard.print(false); //place wall
 			
 			//Wall placing
 			int validWall = -1;
@@ -44,8 +45,10 @@ public class Main {
 				}
 				
 			}
+			in.nextLine(); //Clears in buffer after placing a wall
 			System.out.println();
 		}
+		
 		if(gameboard.gameOver() == 1){
 			System.out.println("PLAYER 1 WINS!" );
 		} else {
