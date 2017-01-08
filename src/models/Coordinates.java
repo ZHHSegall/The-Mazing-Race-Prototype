@@ -13,16 +13,7 @@ public class Coordinates {
 		this.x = x;
 		this.y = y;
 	}
-	/*
-	@Override
-	public boolean equals(Object other){
-	    if (other == null) return false;
-	    if (other == this) return true;
-	    if (!(other instanceof Coordinates))return false;
-	    Coordinates o = (Coordinates) other;
-		return x == o.x && y == o.y;
-	}
-	*/
+	
 	public boolean equals(Coordinates other){
 		return x == other.x && y == other.y;
 	}

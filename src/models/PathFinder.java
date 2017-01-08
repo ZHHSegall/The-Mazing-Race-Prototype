@@ -7,7 +7,6 @@ public class PathFinder {
 	//Uses A* search to test if there is a path between two points.
 	
 	Maze board;
-	Coordinates start;
 	Coordinates finish;
 	Coordinates[][] squares;
 	Set<Coordinates> frontier;
@@ -25,7 +24,7 @@ public class PathFinder {
 			}
 		}
 			
-		start = squares[s.y][s.x];
+		Coordinates start = squares[s.y][s.x];
 		finish = f;
 		frontier = new HashSet<Coordinates>();
 		explored = new HashSet<Coordinates>();
@@ -81,13 +80,6 @@ public class PathFinder {
 			//Add current node to explored
 			explored.add(cur);
 			
-			/*
-			for(Coordinates c : frontier.keySet()){
-				System.out.print("(" + c.x + ", " + c.y + ") -");
-			}
-			System.out.println();*/
-			//System.out.println("Cur Coordinates: (" + cur.loc.x + ", " + cur.loc.y + "), f = " + cur.f 
-			//		+ " g = " + cur.g + " h = " + cur.h);
 			for(char dir : DIRECTIONS){
 				Coordinates succ = this.genSuccessor(cur, dir);
 				if(succ != null && !explored.contains(succ)){

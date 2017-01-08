@@ -131,8 +131,7 @@ public class Maze {
 	//returns 0 for valid path
 	//		  1 for squares not adjacent
 	//		  2 for wall already present
-	//        3 for wall blocks player one's path
-	//        4 for wall blocks player two's path
+	//        3 for wall blocks a path
 	public int placeWall (Coordinates s1, Coordinates s2){
 		PathFinder p1Path = new PathFinder(this, p1.location, p1Goal);
 		PathFinder p2Path = new PathFinder(this, p2.location, p2Goal);
@@ -144,24 +143,18 @@ public class Maze {
 		if(s1.x == s2.x){
 			int maxY = Math.max(s1.y, s2.y);
 			hWalls[maxY][s1.x] = true;
-			if(!p1Path.findPath()){
+			if(!p1Path.findPath() || !p2Path.findPath()){
 				hWalls[maxY][s1.x] = false;
 				return 3;
-			} else if (!p1Path.findPath()){
-				hWalls[maxY][s1.x] = false;
-				return 4;
 			}
 		} 
 		//Vertical case
 		else if(s1.y == s2.y){
 			int maxX = Math.max(s1.x, s2.x);
 			vWalls[s1.y][maxX] = true;
-			if(!p1Path.findPath()){
-				hWalls[s1.y][maxX] = false;
+			if(!p1Path.findPath() || !p2Path.findPath()){
+				vWalls[s1.y][maxX] = false;
 				return 3;
-			} else if(!p2Path.findPath()){
-				hWalls[s1.y][maxX] = false;
-				return 4;
 			}
 		}
 		return 0;
@@ -170,7 +163,7 @@ public class Maze {
 	public void print (){
 		//Print top coordinates
 		int playerTurn = p1Turn ? 1 : 2;
-		System.out.println("Turn: " + turn++ + "-- PLAYER " + playerTurn + "'S MOVE");
+		System.out.println("Turn: " + turn++ + " -- PLAYER " + playerTurn + "'S MOVE");
 		System.out.println();;
 		System.out.print("  ");
 		for(int i = 0; i < width; i++){
@@ -219,11 +212,11 @@ public class Maze {
 						}
 					}
 				}
-				System.out.println(rowNum);
+				System.out.println(" " + rowNum);
 			}
 		}
 		
-		//Print top coordinates
+		//Print bottom coordinates
 		System.out.print("  ");
 		for(int i = 0; i < width; i++){
 			System.out.print("  " + i + " ");

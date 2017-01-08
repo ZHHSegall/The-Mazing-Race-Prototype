@@ -39,10 +39,7 @@ public class Main {
 					System.out.println("There is already a wall between those coordinates. Try again.");
 					break;
 				case 3: 
-					System.out.println("That wall prevents Player One from reaching their goal. Try again.");
-					break;
-				case 4: 
-					System.out.println("That wall prevents Player Two from reaching their goal. Try again.");
+					System.out.println("That wall prevents a player from reaching their goal. Try again.");
 					break;
 				}
 				
@@ -88,9 +85,17 @@ public class Main {
 		Coordinates square = new Coordinates(-1, -1);
 		while(!square.within(board)){
 			System.out.print("Enter " + name  + " Coordinates: ");
-			square.set(in.nextInt(), in.nextInt());
+			square.set(getInt(in), getInt(in));
 			if(!square.within(board)){ System.out.println("Those coordinates don't fall within the board. Try again."); }
 		}
 		return square;
+	}
+	
+	public static int getInt(Scanner in){
+		while(!in.hasNextInt()){
+			in.next();
+			System.out.println("Please enter integers");
+		}
+		return in.nextInt();
 	}
 }
