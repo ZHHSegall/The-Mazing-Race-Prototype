@@ -7,9 +7,11 @@ import models.*;
 public class Main {
 	
 	static int STANDARD_BOARD_SIZE = 10; 
+	static double STARTING_WALL_DENSITY = .2; 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		Maze gameboard = new Maze(STANDARD_BOARD_SIZE, STANDARD_BOARD_SIZE);
+		gameboard.seed(STARTING_WALL_DENSITY);
 		Scanner in = new Scanner(System.in);
 		boolean firstMove = true;
 		

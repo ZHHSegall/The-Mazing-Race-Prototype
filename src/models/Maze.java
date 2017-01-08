@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Random;
+
 public class Maze {
 	
 	private class Player {
@@ -157,6 +159,28 @@ public class Maze {
 			}
 		}
 		return 0;
+	}
+	
+	//Seeds random walls on the board
+	public void seed (double density){
+		Random rng = new Random();
+		boolean valid = false;
+		while(!valid){
+			for(int row = 1; row < hWalls.length - 1; row++){
+				for(int col = 0; col < hWalls[row].length; col++){
+					hWalls[row][col] = rng.nextDouble() <= density;
+				}
+			}
+			for(int row = 0; row < vWalls.length; row++){
+				for(int col = 1; col < vWalls[row].length - 1; col++){
+					vWalls[row][col] = rng.nextDouble() <= density;
+				}
+			}
+			PathFinder p1Path = new PathFinder(this, p1.location, p1Goal);
+			PathFinder p2Path = new PathFinder(this, p2.location, p2Goal);
+			valid = p1Path.findPath() && p2Path.findPath();
+		}
+		
 	}
 	
 	public void print (boolean move){
