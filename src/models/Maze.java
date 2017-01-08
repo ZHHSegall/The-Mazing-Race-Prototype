@@ -165,7 +165,7 @@ public class Maze {
 		if(move){
 			System.out.println("Turn: " + turn + " -- PLAYER " + playerTurn + " -- MOVE");
 		} else {
-			System.out.println("Turn: " + turn + " -- PLAYER " + playerTurn + " -- WALL");
+			System.out.println("Turn: " + turn++ + " -- PLAYER " + playerTurn + " -- WALL");
 			p1Turn = !p1Turn;
 		}
 		System.out.println();;
