@@ -8,14 +8,16 @@ public class PathFinder {
 	
 	Maze board;
 	Coordinates finish;
-	Coordinates[][] squares;
+	Coordinates[][] squares; //Uses a grid of coordinates so that we are working
+							 //with the same set of objects
 	Set<Coordinates> frontier;
-	Set<Coordinates> explored; //Closed list - ordered wrt smallest f
+	Set<Coordinates> explored;
 	HashMap<Coordinates, Integer> gScores;
 	HashMap<Coordinates, Integer> fScores;
 	static char[] DIRECTIONS = {'u', 'r', 'd', 'l'};
 	
 	public PathFinder(Maze b, Coordinates s, Coordinates f){
+		//Creates all possible nodes
 		board = b;
 		squares = new Coordinates[board.height][board.width];
 		for(int row = 0; row < board.height; row++){
@@ -58,7 +60,7 @@ public class PathFinder {
 			case 'u': 
 				return squares[cur.y + 1][cur.x];
 			case 'r':
-				return squares[cur.y ][cur.x + 1];
+				return squares[cur.y][cur.x + 1];
 			case 'd': 
 				return squares[cur.y - 1][cur.x];
 			case 'l':
@@ -80,10 +82,13 @@ public class PathFinder {
 			//Add current node to explored
 			explored.add(cur);
 			
+			//For each possible move...
 			for(char dir : DIRECTIONS){
 				Coordinates succ = this.genSuccessor(cur, dir);
+				//Check if the successor is legal and unexplored
 				if(succ != null && !explored.contains(succ)){
-					
+					//Skip if the successor is already in the frontier
+					//Otherwise put it in the frontier and add appropriate g and f scores
 					boolean skip = false;
 					int succG = gScores.get(cur) + 1;
 					if(!frontier.contains(succ)){
