@@ -177,9 +177,9 @@ public class Maze {
 	
 	public void print (){
 		//Print top coordinates
-		int playerTurn = p1Turn ? 1 : 2;
+		char playerTurn = p1Turn ? 'X' : 'O';
 		System.out.println("Turn: " + turn++ + " -- PLAYER " + playerTurn);
-		System.out.println("PLAYER 1 PATH LENGTH: " + p1.score + "\t" + "PLAYER 2 PATH LENGTH: " + p2.score);
+		System.out.println("PLAYER X PATH LENGTH: " + p1.score + "\t" + "PLAYER O PATH LENGTH: " + p2.score);
 		p1Turn = !p1Turn;
 		
 		System.out.println();
