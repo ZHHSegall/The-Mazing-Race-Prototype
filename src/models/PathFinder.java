@@ -22,6 +22,9 @@ public class PathFinder {
 			this.f = g + loc.manDistanceTo(finish);
 			this.parent = parent;
 		}
+		public boolean at(Coordinates other){
+			return loc.equals(other);
+		}
 	}
 	
 	//Uses A* search to test if there is a path between two points.
@@ -43,14 +46,15 @@ public class PathFinder {
 				squares[row][col] = new Node(new Coordinates(col, row));
 			}
 		}
-			
-		Coordinates start = squares[s.y][s.x].loc;
 		finish = f;
 		frontier = new HashSet<Node>();
 		explored = new HashSet<Node>();
 		
 		//Add first node
-		frontier.add(squares[start.y][start.x]);
+		Node start = squares[s.y][s.x];
+		start.g = 0;
+		start.f = start.loc.manDistanceTo(finish);
+		frontier.add(start);
 	}
 	
 	public Node getBestF (){
@@ -88,7 +92,7 @@ public class PathFinder {
 		while(!frontier.isEmpty()){
 			//If current node is finish, end
 			Node cur = getBestF();
-			if(cur.equals(finish)) 
+			if(cur.at(finish)) 
 				return true;
 			
 			//Removes current node from frontier
