@@ -88,12 +88,12 @@ public class PathFinder {
 		return null;
 	}
 	
-	public boolean findPath(){
+	public List<Coordinates> findPath(){
 		while(!frontier.isEmpty()){
 			//If current node is finish, end
 			Node cur = getBestF();
 			if(cur.at(finish)) 
-				return true;
+				return unrollPath(cur);
 			
 			//Removes current node from frontier
 			frontier.remove(cur);
@@ -123,7 +123,7 @@ public class PathFinder {
 			}
 		}
 	
-		return false;
+		return null;
 	}
 	
 	public List<Coordinates> unrollPath (Node n){

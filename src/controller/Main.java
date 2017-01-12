@@ -13,45 +13,35 @@ public class Main {
 		Maze gameboard = new Maze(STANDARD_BOARD_SIZE, STANDARD_BOARD_SIZE);
 		gameboard.seed(STARTING_WALL_DENSITY);
 		Scanner in = new Scanner(System.in);
-		boolean firstMove = true;
 		
 		while(gameboard.gameOver() == 0){
 			//Printing Board
-			gameboard.print(true); //move 
+			gameboard.print(); //wall 
 			System.out.println(); 
 			
-			//Movement
-			while(!gameboard.move(getMove(in))){
-				System.out.println("You seem to be running into a wall. Please try another move.");
-			}
-			
-			gameboard.print(false); //place wall
-			
 			//Wall placing
-			if(!firstMove){
-				int validWall = -1;
-				Coordinates s1, s2; //Squares between which the wall will be placed
-				while(validWall != 0){
-					System.out.println("Enter two squares to place a wall between.");
-					s1 = getCoordinates(in, gameboard, "Square 1");
-					s2 = getCoordinates(in, gameboard, "Square 2");
-					validWall = gameboard.placeWall(s1, s2);
-					switch(validWall){
-					case 1: 
-						System.out.println("Those coordinates don't seem to be adjacent. Try again.");
-						break;
-					case 2:
-						System.out.println("There is already a wall between those coordinates. Try again.");
-						break;
-					case 3: 
-						System.out.println("That wall prevents a player from reaching their goal. Try again.");
-						break;
-					}
-					
+			int validWall = -1;
+			Coordinates s1, s2; //Squares between which the wall will be placed
+			while(validWall != 0){
+				System.out.println("Enter two squares to place a wall between.");
+				s1 = getCoordinates(in, gameboard, "Square 1");
+				s2 = getCoordinates(in, gameboard, "Square 2");
+				validWall = gameboard.placeWall(s1, s2);
+				switch(validWall){
+				case 1: 
+					System.out.println("Those coordinates don't seem to be adjacent. Try again.");
+					break;
+				case 2:
+					System.out.println("There is already a wall between those coordinates. Try again.");
+					break;
+				case 3: 
+					System.out.println("That wall prevents a player from reaching their goal. Try again.");
+					break;
 				}
-				in.nextLine(); //Clears in buffer after placing a wall
+				
 			}
-			firstMove = false;
+			in.nextLine(); //Clears in buffer after placing a wall
+			
 			System.out.println();
 		}
 		
