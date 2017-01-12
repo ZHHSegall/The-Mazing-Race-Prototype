@@ -55,6 +55,9 @@ public class Maze {
 		}
 	}
 	
+	public boolean isP1Turn(){
+		return p1Turn;
+	}
 	
 	//Tests if a move is valid without moving a player
 	public boolean moveIsValid(char dir, Coordinates loc){
@@ -100,10 +103,10 @@ public class Maze {
 		p2.score = p2Path.size();
 		
 		//Initialize all squares to zero in path
-		for(int[] row : paths)
-			for(int square : row)
-				square = 0;
-						
+		for(int row = 0; row < paths.length; row++)
+			for(int col = 0; col < paths[0].length; col++)
+				paths[row][col] = 0;
+					
 		//Plot player paths onto grid.
 		for(Coordinates p1Squares : p1Path)
 			paths[p1Squares.y][p1Squares.x]++;
@@ -180,8 +183,8 @@ public class Maze {
 	public void print (){
 		//Print top coordinates
 		int playerTurn = p1Turn ? 1 : 2;
-		System.out.println("Turn: " + turn++ + " -- PLAYER " + playerTurn + " -- WALL");
-		System.out.println("PLAYER 1 SCORE: " + p1.score + "\t\t" + "PLAYER 2 SCORE: " + p2.score);
+		System.out.println("Turn: " + turn++ + " -- PLAYER " + playerTurn);
+		System.out.println("PLAYER 1 PATH LENGTH: " + p1.score + "\t" + "PLAYER 2 PATH LENGTH: " + p2.score);
 		p1Turn = !p1Turn;
 		
 		System.out.println();
@@ -246,9 +249,9 @@ public class Maze {
 		System.out.println();
 	}
 	
-	//Returns 1 if player 1 has won, -1 is player 2 has, and 0 otherwise
-	public int gameOver (){
-		return 0;
+	//Returns 1 if player 1 has won, 2 is player 2 has, and 0 for a tie
+	public int winner (){
+		return p1.score <= p2.score ? (p1.score >= p2.score ? 0 : 1) : 2; 
 	}
 	
 }
