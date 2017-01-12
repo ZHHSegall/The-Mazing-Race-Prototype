@@ -15,6 +15,11 @@ public class Maze {
 			this.start = start;
 			this.goal = goal;
 		}
+		
+		protected List<Coordinates> findPath (Maze maze){
+			PathFinder pf = new PathFinder(maze, start, goal);
+			return pf.findPath();
+		}
 	}
 	//Board properties
 	int width;
@@ -66,23 +71,17 @@ public class Maze {
 		
 		switch(dir){
 		case 'u':
-			if(hWalls[loc.y + 1][loc.x]){ return false; }
-			break;
+			return !hWalls[loc.y + 1][loc.x];
 		case 'r':
-			if(vWalls[loc.y][loc.x + 1]){ return false; }
-			break;
+			return !vWalls[loc.y][loc.x + 1];
 		case 'd':
-			if(hWalls[loc.y][loc.x]){ return false; }
-			break;
+			return !hWalls[loc.y][loc.x];
 		case 'l':
-			if(vWalls[loc.y][loc.x]){ return false; }
-			break;
+			return !vWalls[loc.y][loc.x];
+		default:
+			return true;
 		}
-		
-		return true;
 	}
-	
-	
 	
 	/*
 	 * Tests if
@@ -119,9 +118,7 @@ public class Maze {
 	//		  2 for wall already present
 	//        3 for wall blocks a path
 	public int placeWall (Coordinates s1, Coordinates s2){
-		//Pathfinders, paths, and max coordinates
-		PathFinder p1PathFinder = new PathFinder(this, p1.start, p1.goal);
-		PathFinder p2PathFinder = new PathFinder(this, p2.start, p2.goal);
+		//Pathfinders, paths, and max coordinates]
 		List<Coordinates> p1Path,  p2Path;
 		int maxY = Math.max(s1.y, s2.y);
 		int maxX = Math.max(s1.x, s2.x);
@@ -138,8 +135,8 @@ public class Maze {
 		else 
 			vWalls[s1.y][maxX] = true;
 
-		p1Path = p1PathFinder.findPath();
-		p2Path = p2PathFinder.findPath();
+		p1Path = p1.findPath(this);
+		p2Path = p2.findPath(this);
 		boolean noPath = p1Path == null || p2Path == null;
 		
 		//undo bad wall placement and return failure
@@ -171,10 +168,8 @@ public class Maze {
 					vWalls[row][col] = rng.nextDouble() <= density;
 				}
 			}
-			PathFinder p1PathFinder = new PathFinder(this, p1.start, p1.goal);
-			PathFinder p2PathFinder = new PathFinder(this, p2.start, p2.goal);
-			p1Path = p1PathFinder.findPath();
-			p2Path = p2PathFinder.findPath();
+			p1Path = p1.findPath(this);
+			p2Path = p2.findPath(this);
 			valid = p1Path != null && p2Path != null;
 		}
 		plotPaths(p1Path, p2Path);
