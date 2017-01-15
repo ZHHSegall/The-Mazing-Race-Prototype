@@ -4,46 +4,64 @@ import java.util.*;
 
 public class PathFinder {
 	
+	private class Node {
+		Coordinates loc;
+		int g, f;
+		Node parent;
+		
+		public Node(Coordinates loc){
+			this.loc = loc;
+			g = Integer.MAX_VALUE;
+			f = Integer.MAX_VALUE;
+			parent = null;
+		}
+		
+		public Node(Coordinates loc, int g, Node parent){
+			this.loc = loc;
+			this.g = g;
+			this.f = g + loc.manDistanceTo(finish);
+			this.parent = parent;
+		}
+		public boolean at(Coordinates other){
+			return loc.equals(other);
+		}
+	}
+	
 	//Uses A* search to test if there is a path between two points.
 	
 	Maze board;
 	Coordinates finish;
-	Coordinates[][] squares; //Uses a grid of coordinates so that we are working
+	Node[][] squares; //Uses a grid of coordinates so that we are working
 							 //with the same set of objects
-	Set<Coordinates> frontier;
-	Set<Coordinates> explored;
-	HashMap<Coordinates, Integer> gScores;
-	HashMap<Coordinates, Integer> fScores;
+	Set<Node> frontier;
+	Set<Node> explored;
 	static char[] DIRECTIONS = {'u', 'r', 'd', 'l'};
 	
 	public PathFinder(Maze b, Coordinates s, Coordinates f){
 		//Creates all possible nodes
 		board = b;
-		squares = new Coordinates[board.height][board.width];
+		squares = new Node[board.height][board.width];
 		for(int row = 0; row < board.height; row++){
 			for(int col = 0; col < board.width; col++){
-				squares[row][col] = new Coordinates(col, row);
+				squares[row][col] = new Node(new Coordinates(col, row));
 			}
 		}
-			
-		Coordinates start = squares[s.y][s.x];
 		finish = f;
-		frontier = new HashSet<Coordinates>();
-		explored = new HashSet<Coordinates>();
-		gScores = new HashMap<Coordinates, Integer>();
-		fScores = new HashMap<Coordinates, Integer>();
+		frontier = new HashSet<Node>();
+		explored = new HashSet<Node>();
 		
 		//Add first node
+		Node start = squares[s.y][s.x];
+		start.g = 0;
+		start.f = start.loc.manDistanceTo(finish);
 		frontier.add(start);
-		gScores.put(start, 0);
-		fScores.put(start, start.manDistanceTo(finish));
 	}
 	
-	public Coordinates getBestF (){
-		double bestF = Double.POSITIVE_INFINITY;
-		Coordinates best = null;
-		for(Coordinates cur : frontier){
-			int curF = fScores.get(cur); 
+	public Node getBestF (){
+		int bestF = Integer.MAX_VALUE;
+		Node best = null;
+		for(Node cur : frontier){
+			int curF = cur.f; 
 			if(curF < bestF){
 				best = cur;
 				bestF = curF;
@@ -54,7 +72,7 @@ public class PathFinder {
 	
 	//Returns null if the proposed successor is invalid
 	//Uses Manhattan distance for heuristic
-	private Coordinates genSuccessor(Coordinates cur, char dir){
+	private Node genSuccessor(Coordinates cur, char dir){
 		if(board.moveIsValid(dir, cur)){
 			switch(dir){
 			case 'u': 
@@ -70,12 +88,12 @@ public class PathFinder {
 		return null;
 	}
 	
-	public boolean findPath(){
+	public List<Coordinates> findPath(){
 		while(!frontier.isEmpty()){
 			//If current node is finish, end
-			Coordinates cur = getBestF();
-			if(cur.equals(finish)) 
-				return true;
+			Node cur = getBestF();
+			if(cur.at(finish)) 
+				return unrollPath(cur);
 			
 			//Removes current node from frontier
 			frontier.remove(cur);
@@ -84,28 +102,36 @@ public class PathFinder {
 			
 			//For each possible move...
 			for(char dir : DIRECTIONS){
-				Coordinates succ = this.genSuccessor(cur, dir);
+				Node succ = this.genSuccessor(cur.loc, dir);
 				//Check if the successor is legal and unexplored
 				if(succ != null && !explored.contains(succ)){
 					//Skip if the successor is already in the frontier
 					//Otherwise put it in the frontier and add appropriate g and f scores
 					boolean skip = false;
-					int succG = gScores.get(cur) + 1;
+					int succG = cur.g + 1;
 					if(!frontier.contains(succ)){
 						frontier.add(succ);
-					} else if (succG >= gScores.get(succ)) {
+					} else if (succG >= succ.g) {
 						skip = true;
-					}
+					} 
 					if(!skip){
-						gScores.put(succ, succG);
-						fScores.put(succ, succG + succ.manDistanceTo(finish));
+						succ.g = succG;
+						succ.f = succG + succ.loc.manDistanceTo(finish);
+						succ.parent = cur;
 					}
 				}
 			}
 		}
 	
-		return false;
+		return null;
 	}
 	
-	
+	public List<Coordinates> unrollPath (Node n){
+		List<Coordinates> ret = new LinkedList<Coordinates>();
+		while(n != null){
+			ret.add(n.loc);
+			n = n.parent;
+		}
+		return ret;
+	}
 }

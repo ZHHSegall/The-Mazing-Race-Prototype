@@ -7,71 +7,81 @@ import models.*;
 public class Main {
 	
 	static int STANDARD_BOARD_SIZE = 10; 
+	static double STARTING_WALL_DENSITY = .2; 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		Maze gameboard = new Maze(STANDARD_BOARD_SIZE, STANDARD_BOARD_SIZE);
+		gameboard.seed(STARTING_WALL_DENSITY);
 		Scanner in = new Scanner(System.in);
+		boolean p1Pass = false, p2Pass = false;
+		boolean playerTurn;
 		
-		while(gameboard.gameOver() == 0){
+		while(p1Pass == false || p2Pass == false){
 			//Printing Board
-			gameboard.print(true); //place wall
+			gameboard.print(); //wall 
 			System.out.println(); 
-			
-			//Movement
-			while(!gameboard.move(getMove(in))){
-				System.out.println("You seem to be running into a wall. Please try another move.");
-			}
-			
-			gameboard.print(false); //place wall
-			
+			boolean pass = !makeWall(in);
 			//Wall placing
-			int validWall = -1;
-			Coordinates s1, s2; //Squares between which the wall will be placed
-			while(validWall != 0){
-				System.out.println("Enter two squares to place a wall between.");
-				s1 = getCoordinates(in, gameboard, "Square 1");
-				s2 = getCoordinates(in, gameboard, "Square 2");
-				validWall = gameboard.placeWall(s1, s2);
-				switch(validWall){
-				case 1: 
-					System.out.println("Those coordinates don't seem to be adjacent. Try again.");
-					break;
-				case 2:
-					System.out.println("There is already a wall between those coordinates. Try again.");
-					break;
-				case 3: 
-					System.out.println("That wall prevents a player from reaching their goal. Try again.");
-					break;
+			if(!pass){
+				int validWall = -1;
+				Coordinates s1, s2; //Squares between which the wall will be placed
+				while(validWall != 0){
+					System.out.println("Enter two squares to place a wall between.");
+					s1 = getCoordinates(in, gameboard, "Square 1");
+					s2 = getCoordinates(in, gameboard, "Square 2");
+					validWall = gameboard.placeWall(s1, s2);
+					switch(validWall){
+					case 1: 
+						System.out.println("Those coordinates don't seem to be adjacent. Try again.");
+						break;
+					case 2:
+						System.out.println("There is already a wall between those coordinates. Try again.");
+						break;
+					case 3: 
+						System.out.println("That wall prevents a player from reaching their goal. Try again.");
+						break;
+					}		
 				}
-				
-			}
+			} 
+			if(gameboard.isP1Turn())
+				p1Pass = pass;
+			else 
+				p2Pass = pass;
+			
 			in.nextLine(); //Clears in buffer after placing a wall
+			
 			System.out.println();
 		}
 		
-		if(gameboard.gameOver() == 1){
+		switch(gameboard.winner()){
+		case 1:
 			System.out.println("PLAYER 1 WINS!" );
-		} else {
+			break;
+		case 2: 
 			System.out.println("PLAYER 2 WINS!" );
+			break;
+		default:
+			System.out.println("TIE!" );	
 		}
 		in.close();
 	}
 	
 	
-	public static char getMove(Scanner in){
+	public static boolean makeWall(Scanner in){
 		boolean valid = false;
-		char direction = 'c';
+		char move = 'c';
 		while(!valid){
-			System.out.println("Please enter a direction to move: (l)eft, (r)ight, (u)p, (d)own");
+			System.out.println("Please choose to (w)all or (p)ass");
 			//TODO Improve character verification
+			//TODO (Bug) You need to press enter twice for the game to understand a (p)ass
 			String next = in.nextLine();
-			if(next.length() > 0) { direction = next.toLowerCase().charAt(0); }
-			valid = (direction == 'u' || direction == 'd' || direction == 'l' || direction == 'r');
+			if(next.length() > 0) { move = next.toLowerCase().charAt(0); }
+			valid = (move == 'w' || move == 'p');
 			if(!valid){
-				System.out.println("Not a valid direction. Please try again");
+				System.out.println("Not a option. Please try again");
 			}
 		}
-		return direction;
+		return move == 'w';
 	}
 	
 	public static Coordinates getCoordinates(Scanner in, Maze board){
