@@ -1,7 +1,23 @@
 # The Mazing Race
 A game by Zachary Segall
 
-## The Game
+
+##Playing The Mazing Race
+
+*The Mazing Race* currently runs in a terminal.
+
+1. Download the project.
+2. Open a terminal for Linux or Mac, Windows Command Prompt for windows. If you can't
+find the terminal/Command Prompt, use the search bar to do so.
+3. Navigate to the project folder. The relevant commands are cd (Linux, Mac, Windows) to
+change directory and ls (Linux, Mac) or dir (Windows) to print the contents of the current directory 
+4. Run
+```
+java -jar TMR_1.0.jar
+```
+
+
+## The Rules
 
 #### Setting up
 The game starts with a 10 by 10 square board with some walls randomly placed.
