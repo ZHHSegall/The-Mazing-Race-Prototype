@@ -6,7 +6,7 @@ A game by Zachary Segall
 
 *The Mazing Race* currently runs in a terminal.
 
-1. Download the project.
+1. Download TMR_1.0.jar.
 2. Open a terminal for Linux or Mac, Windows Command Prompt for windows. If you can't
 find the terminal/Command Prompt, use the search bar to do so.
 3. Navigate to the project folder. The relevant commands are cd (Linux, Mac, Windows) to
