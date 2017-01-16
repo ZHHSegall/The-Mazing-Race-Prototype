@@ -55,10 +55,10 @@ public class Main {
 		
 		switch(gameboard.winner()){
 		case 1:
-			System.out.println("PLAYER 1 WINS!" );
+			System.out.println("PLAYER X WINS!" );
 			break;
 		case 2: 
-			System.out.println("PLAYER 2 WINS!" );
+			System.out.println("PLAYER O WINS!" );
 			break;
 		default:
 			System.out.println("TIE!" );	
